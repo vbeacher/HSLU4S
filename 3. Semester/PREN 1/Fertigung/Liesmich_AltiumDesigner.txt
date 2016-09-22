@@ -1,0 +1,17 @@
+Information zum Altium Designer
+********************************
+
+Die Aktuelle Version der Anleitung von Altium Designer ist jeweils direkt über den Software-Kiosk zu beziehen. Dort ist immer die aktuellste Version verfügbar. (Wird dort den Altium-Download gestartet, erhält man automatisch eine E-Mail mit den Links zu den aktuellen PDFs.)
+
+Bei Fragen und Unklarheiten kann man sich an folgende Person wenden:
+
+Prof. Vinzenz V.Härri
+Head Center of Competence IIEE, Efficient Energy Systems
+T +41 41 3493 313, F +41 41 3493 960
+www.hslu.ch/iiee
+vinzenz.haerri@hslu.ch
+Private office: CH-6074 Giswil
+T +41 41 675 24 22
+
+
+Lst/ 27.2.2013
