@@ -1,0 +1,1735 @@
+ This run of the CFX Release 17.1 Solver started at 16:10:30 on 30 Sep
+ 2016 by user tapeltie on D0003711 (intel_xeon64.sse2_winnt) using the
+ command:
+ 
+  "C:\Program Files\ANSYS Inc\v171\CFX\bin\perllib\cfx5solve.pl"
+    -stdout-comms -batch -ccl -
+ 
+ Release 17.1
+ 
+  Point Releases and Patches installed:
+  ANSYS, Inc. Products Release 17.1
+  ANSYS Mechanical Products Release 17.1
+  ANSYS Customization Files for User Programmable Features Release 17.1
+  ANSYS Autodyn Release 17.1
+  ANSYS LS-DYNA Release 17.1
+  ANSYS AIM Release 17.1
+  ANSYS CFX (includes ANSYS CFD-Post) Release 17.1
+  ANSYS Fluent (includes ANSYS CFD-Post) Release 17.1
+  ANSYS TurboGrid Release 17.1
+  ANSYS Polyflow (includes ANSYS CFD-Post) Release 17.1
+  ANSYS CFD-Post only Release 17.1
+  ANSYS FORTE Release 17.1
+  ANSYS Chemkin Release 17.1
+  ANSYS ICEM CFD Release 17.1
+  ANSYS Aqwa Release 17.1
+  ANSYS Composite PrepPost Release 17.1
+  ANSYS Icepak (includes ANSYS CFD-Post) Release 17.1
+  ANSYS Remote Solve Manager Standalone Services Release 17.1
+  AutoCAD Release 17.1
+  ACIS Release 17.1
+  Catia, Version 4 Release 17.1
+  Catia, Version 5 Release 17.1
+  Catia, Version 6 Release 17.1
+  Creo Elements/Direct Modeling Release 17.1
+  Inventor Release 17.1
+  JTOpen Release 17.1
+  NX Release 17.1
+  Parasolid Release 17.1
+  Creo Parametric (formerly Pro/ENGINEER) Release 17.1
+  Solid Edge Release 17.1
+  SolidWorks Release 17.1
+  ANSYS, Inc. License Manager Release 17.1
+ 
+ Setting up CFX Solver run ...
+ 
+
+ +--------------------------------------------------------------------+
+ |                                                                    |
+ |                    CFX Command Language for Run                    |
+ |                                                                    |
+ +--------------------------------------------------------------------+
+
+ LIBRARY:
+   CEL:
+     EXPRESSIONS:
+       Tlower = 275 [K]
+       Tupper = 325 [K]
+       VisT = Vislower+(Visupper-Vislower)*(T-Tlower)/(Tupper-Tlower)
+       Vislower = 1.8E-03 [N s m^-2]
+       Visupper = 5.45E-04 [N s m^-2]
+     END
+     FUNCTION: main inlet
+       Argument Units = [m], [m], [m]
+       File Name = C:/Users/tapeltie/Documents/THFL_SIM/Tutorial \
+         5/InjectMixer_velocity_profile.csv
+       Option = Profile Data
+       Spatial Fields = x, y, z
+       DATA FIELD: Velocity u
+         Field Name = Velocity u
+         Parameter List = U,Velocity r Component,Wall U,Wall Velocity r \
+           Component
+         Result Units = [m s^-1]
+       END
+       DATA FIELD: Velocity v
+         Field Name = Velocity v
+         Parameter List = V,Velocity Theta Component,Wall V,Wall Velocity \
+           Theta Component
+         Result Units = [m s^-1]
+       END
+       DATA FIELD: Velocity w
+         Field Name = Velocity w
+         Parameter List = Velocity Axial Component,W,Wall Velocity Axial \
+           Component,Wall W
+         Result Units = [m s^-1]
+       END
+     END
+   END
+   MATERIAL: Water
+     Material Description = Water (liquid)
+     Material Group = Water Data,Constant Property Liquids
+     Option = Pure Substance
+     Thermodynamic State = Liquid
+     PROPERTIES:
+       Option = General Material
+       EQUATION OF STATE:
+         Density = 997.0 [kg m^-3]
+         Molar Mass = 18.02 [kg kmol^-1]
+         Option = Value
+       END
+       SPECIFIC HEAT CAPACITY:
+         Option = Value
+         Specific Heat Capacity = 4181.7 [J kg^-1 K^-1]
+         Specific Heat Type = Constant Pressure
+       END
+       REFERENCE STATE:
+         Option = Specified Point
+         Reference Pressure = 1 [atm]
+         Reference Specific Enthalpy = 0.0 [J/kg]
+         Reference Specific Entropy = 0.0 [J/kg/K]
+         Reference Temperature = 25 [C]
+       END
+       DYNAMIC VISCOSITY:
+         Dynamic Viscosity = VisT
+         Option = Value
+       END
+       THERMAL CONDUCTIVITY:
+         Option = Value
+         Thermal Conductivity = 0.6069 [W m^-1 K^-1]
+       END
+       ABSORPTION COEFFICIENT:
+         Absorption Coefficient = 1.0 [m^-1]
+         Option = Value
+       END
+       SCATTERING COEFFICIENT:
+         Option = Value
+         Scattering Coefficient = 0.0 [m^-1]
+       END
+       REFRACTIVE INDEX:
+         Option = Value
+         Refractive Index = 1.0 [m m^-1]
+       END
+       THERMAL EXPANSIVITY:
+         Option = Value
+         Thermal Expansivity = 2.57E-04 [K^-1]
+       END
+     END
+   END
+ END
+ FLOW: Flow Analysis 1
+   SOLUTION UNITS:
+     Angle Units = [rad]
+     Length Units = [m]
+     Mass Units = [kg]
+     Solid Angle Units = [sr]
+     Temperature Units = [K]
+     Time Units = [s]
+   END
+   ANALYSIS TYPE:
+     Option = Steady State
+     EXTERNAL SOLVER COUPLING:
+       Option = None
+     END
+   END
+   DOMAIN: InjectMixer
+     Coord Frame = Coord 0
+     Domain Type = Fluid
+     Location = B1.P3
+     BOUNDARY: InjectMixer Default
+       Boundary Type = WALL
+       Location = F3.B1.P3,F4.B1.P3,F5.B1.P3,F6.B1.P3
+       BOUNDARY CONDITIONS:
+         HEAT TRANSFER:
+           Option = Adiabatic
+         END
+         MASS AND MOMENTUM:
+           Option = No Slip Wall
+         END
+         WALL ROUGHNESS:
+           Option = Smooth Wall
+         END
+       END
+     END
+     BOUNDARY: main inlet
+       Boundary Type = INLET
+       Location = main inlet
+       BOUNDARY CONDITIONS:
+         FLOW REGIME:
+           Option = Subsonic
+         END
+         HEAT TRANSFER:
+           Option = Static Temperature
+           Static Temperature = 285 [K]
+         END
+         MASS AND MOMENTUM:
+           Option = Cartesian Velocity Components
+           U = main inlet.Velocity u(x,y,z)
+           V = main inlet.Velocity v(x,y,z)
+           W = main inlet.Velocity w(x,y,z)
+         END
+         TURBULENCE:
+           Option = Medium Intensity and Eddy Viscosity Ratio
+         END
+       END
+     END
+     BOUNDARY: outlet
+       Boundary Type = OUTLET
+       Location = outlet
+       BOUNDARY CONDITIONS:
+         FLOW REGIME:
+           Option = Subsonic
+         END
+         MASS AND MOMENTUM:
+           Option = Average Static Pressure
+           Pressure Profile Blend = 0.05
+           Relative Pressure = 0 [Pa]
+         END
+         PRESSURE AVERAGING:
+           Option = Average Over Whole Outlet
+         END
+       END
+     END
+     BOUNDARY: side inlet
+       Boundary Type = INLET
+       Location = side inlet
+       BOUNDARY CONDITIONS:
+         FLOW REGIME:
+           Option = Subsonic
+         END
+         HEAT TRANSFER:
+           Option = Static Temperature
+           Static Temperature = 315 [K]
+         END
+         MASS AND MOMENTUM:
+           Normal Speed = 5 [m s^-1]
+           Option = Normal Speed
+         END
+         TURBULENCE:
+           Option = Medium Intensity and Eddy Viscosity Ratio
+         END
+       END
+     END
+     DOMAIN MODELS:
+       BUOYANCY MODEL:
+         Option = Non Buoyant
+       END
+       DOMAIN MOTION:
+         Option = Stationary
+       END
+       MESH DEFORMATION:
+         Option = None
+       END
+       REFERENCE PRESSURE:
+         Reference Pressure = 0 [atm]
+       END
+     END
+     FLUID DEFINITION: Fluid 1
+       Material = Water
+       Option = Material Library
+       MORPHOLOGY:
+         Option = Continuous Fluid
+       END
+     END
+     FLUID MODELS:
+       COMBUSTION MODEL:
+         Option = None
+       END
+       HEAT TRANSFER MODEL:
+         Option = Thermal Energy
+       END
+       THERMAL RADIATION MODEL:
+         Option = None
+       END
+       TURBULENCE MODEL:
+         Option = k epsilon
+       END
+       TURBULENT WALL FUNCTIONS:
+         Option = Scalable
+       END
+     END
+   END
+   OUTPUT CONTROL:
+     RESULTS:
+       File Compression Level = Default
+       Option = Standard
+     END
+   END
+   SOLVER CONTROL:
+     Turbulence Numerics = First Order
+     ADVECTION SCHEME:
+       Option = High Resolution
+     END
+     CONVERGENCE CONTROL:
+       Maximum Number of Iterations = 50
+       Minimum Number of Iterations = 1
+       Physical Timescale = 2 [s]
+       Timescale Control = Physical Timescale
+     END
+     CONVERGENCE CRITERIA:
+       Residual Target = 1.E-4
+       Residual Type = RMS
+     END
+     DYNAMIC MODEL CONTROL:
+       Global Dynamic Model Control = On
+     END
+   END
+ END
+ COMMAND FILE:
+   Version = 17.1
+   Results Version = 17.1
+ END
+ SIMULATION CONTROL:
+   EXECUTION CONTROL:
+     EXECUTABLE SELECTION:
+       Double Precision = No
+       Large Problem = No
+     END
+     INTERPOLATOR STEP CONTROL:
+       Runtime Priority = Standard
+       MEMORY CONTROL:
+         Memory Allocation Factor = 1.0
+       END
+     END
+     PARALLEL HOST LIBRARY:
+       HOST DEFINITION: d0003711
+         Host Architecture String = winnt-amd64
+         Installation Root = C:\Program Files\ANSYS Inc\v%v\CFX
+       END
+     END
+     PARTITIONER STEP CONTROL:
+       Multidomain Option = Automatic
+       Runtime Priority = Standard
+       MEMORY CONTROL:
+         Memory Allocation Factor = 1.0
+       END
+       PARTITION SMOOTHING:
+         Maximum Partition Smoothing Sweeps = 100
+         Option = Smooth
+       END
+       PARTITIONING TYPE:
+         MeTiS Type = k-way
+         Option = MeTiS
+         Partition Size Rule = Automatic
+       END
+     END
+     RUN DEFINITION:
+       Run Mode = Full
+       Solver Input File = C:\Users\tapeltie\Documents\THFL_SIM\Tutorial \
+         5\InjectMixer.def
+       Solver Results File = C:\Users\tapeltie\Documents\THFL_SIM\Tutorial \
+         5\InjectMixer_001.res
+     END
+     SOLVER STEP CONTROL:
+       Runtime Priority = Standard
+       MEMORY CONTROL:
+         Memory Allocation Factor = 1.0
+       END
+       PARALLEL ENVIRONMENT:
+         Number of Processes = 1
+         Start Method = Serial
+       END
+     END
+   END
+ END
+ 
+
+ +--------------------------------------------------------------------+
+ |                                                                    |
+ |                            Profile Data                            |
+ |                                                                    |
+ +--------------------------------------------------------------------+
+
+
+ +--------------------------------------------------------------------+
+ |  Profile Data File: C:\Users\tapeltie\Documents\THFL_SIM\Tutorial  |
+ |                 5\InjectMixer_velocity_profile.csv                 |
+ |                                                                    |
+ | File size: 10.1 kB. Summary shown.                                 |
+ +--------------------------------------------------------------------+
+
+ [Name]
+ main inlet
+ 
+ [Spatial Fields]
+ x,y,z
+ 
+ [Data]
+ x [ m ], y [ m ], z [ m ], Velocity u [ m s^-1 ], ...
+ 2.820583580E-01,-1.883037813E+00,-4.000000000E+00,0.000000000E+00, ...
+ 1.748606860E-01,-1.892647848E+00,-4.000000000E+00,0.000000000E+00, ...
+ 2.152982650E-01,-1.784363300E+00,-4.000000000E+00,0.000000000E+00, ...
+ -1.660140750E-01,-1.851415649E+00,-4.000000000E+00, ...
+ -2.283515480E-01,-1.772721991E+00,-4.000000000E+00, ...
+ -1.171627570E-01,-1.718707591E+00,-4.000000000E+00, ...
+ -4.788099030E-04,-1.695283294E+00,-4.000000000E+00, ...
+ -1.354036950E-02,-1.887702249E+00,-4.000000000E+00, ...
+ -1.865109500E-01,-1.983777711E+00,-4.000000000E+00, ...
+ 1.456576440E-01,-2.078991063E+00,-4.000000000E+00,0.000000000E+00, ...
+ 2.850584090E-01,-2.116112508E+00,-4.000000000E+00,0.000000000E+00, ...
+ 2.166487570E-01,-2.214279592E+00,-4.000000000E+00,0.000000000E+00, ...
+ 1.162784770E-01,-1.718340904E+00,-4.000000000E+00,0.000000000E+00, ...
+ ...
+ ...
+
+ +--------------------------------------------------------------------+
+ |                                                                    |
+ |                               Solver                               |
+ |                                                                    |
+ +--------------------------------------------------------------------+
+
+
+
+
+ +--------------------------------------------------------------------+
+ |                                                                    |
+ |                       ANSYS(R) CFX(R) Solver                       |
+ |                                                                    |
+ | Release 17.1                                                       |
+ | Build 17.1 2016.04.01-23.17-136026                                 |
+ | Fri Apr  1 23:52:11 GMTDT 2016                                     |
+ |                                                                    |
+ |                        Executable Attributes                       |
+ |                                                                    |
+ |         single-64bit-int32-archfort-optimised-noprof-lcomp         |
+ |                                                                    |
+ | (C) 2016 ANSYS, Inc.                                               |
+ |                                                                    |
+ | All rights reserved. Unauthorized use, distribution or duplication |
+ | is prohibited. This product is subject to U.S. laws governing      |
+ | export and re-export. For full Legal Notice, see documentation.    |
+ +--------------------------------------------------------------------+
+
+
+
+
+ +--------------------------------------------------------------------+
+ |                  Job Information at Start of Run                   |
+ +--------------------------------------------------------------------+
+
+ Run mode:       serial run
+
+ Host computer:  D0003711 (PID:4736)
+
+ Job started:    Fri Sep 30 16:10:33 2016
+
+ +--------------------------------------------------------------------+
+ |                        License Information                         |
+ +--------------------------------------------------------------------+
+ 
+ License Cap:    ANSYS CFX Solver (Max 128K Nodes)
+ License ID:     inf38.campus.intern-SYSTEM-6140-600574
+
+
+ +--------------------------------------------------------------------+
+ |        Memory Allocated for Run  (Actual usage may be less)        |
+ +--------------------------------------------------------------------+
+
+           | Real       | Integer    | Character | Logical  | Double
+ ----------+------------+------------+-----------+----------+----------
+ Mwords    |      13.79 |       2.67 |      7.26 |     0.12 |     0.25
+ Mbytes    |      52.60 |      10.17 |      6.93 |     0.46 |     1.92
+ ----------+------------+------------+-----------+----------+----------
+
+
+ +--------------------------------------------------------------------+
+ |                  Host Memory Information (Mbytes)                  |
+ +--------------------------------------------------------------------+
+ |          Host           |     System     |   Allocated    |   %    |
+ +-------------------------+----------------+----------------+--------+
+ | D0003711                |     12285.59   |        72.08   |   0.59 |
+ +-------------------------+----------------+----------------+--------+
+
+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ | The Wall Heat Transfer Coefficient written to the results file for |
+ | any turbulent phase with heat transfer is based on the turbulent   |
+ | wall function coefficient. It is consistent with the Wall Heat Flux|
+ | the wall temperature, and the Wall Adjacent Temperature            |
+ | (near-wall temperature).  If you would like it to be based on a    |
+ | user-specified bulk temperature instead, please set the expert     |
+ | parameter "tbulk for htc = <value>".                               |
+ +--------------------------------------------------------------------+
+
+ +--------------------------------------------------------------------+
+ |                          Mesh Statistics                           |
+ +--------------------------------------------------------------------+
+ | Domain Name          | Orthog. Angle | Exp. Factor  | Aspect Ratio |
+ +----------------------+---------------+--------------+--------------+
+ |                      | Minimum [deg] |   Maximum    |    Maximum   |
+ +----------------------+---------------+--------------+--------------+
+ | InjectMixer          |       25.8 ok |        30  ! |        19 OK |
+ +----------------------+---------------+--------------+--------------+
+ |                      |  %!  %ok  %OK | %!  %ok  %OK | %!  %ok  %OK |
+ +----------------------+---------------+--------------+--------------+
+ | InjectMixer          |   0    2   98 | <1    4   96 |  0    0  100 |
+ +----------------------+---------------+--------------+--------------+
+
+ Domain Name : InjectMixer
+
+     Total Number of Nodes                                =       10069
+
+     Total Number of Elements                             =       27078
+         Total Number of Tetrahedrons                     =       13168
+         Total Number of Prisms                           =       13910
+
+     Total Number of Faces                                =        3048
+
+ +--------------------------------------------------------------------+
+ |                     Average Scale Information                      |
+ +--------------------------------------------------------------------+
+
+ Domain Name : InjectMixer
+     Global Length                                         = 2.0532E+00
+     Minimum Extent                                        = 1.0000E+00
+     Maximum Extent                                        = 7.0000E+00
+     Density                                               = 9.9700E+02
+     Dynamic Viscosity                                     = 1.4912E-03
+     Velocity                                              = 6.4891E-01
+     Advection Time                                        = 3.1641E+00
+     Reynolds Number                                       = 8.9081E+05
+     Thermal Conductivity                                  = 6.0690E-01
+     Specific Heat Capacity at Constant Pressure           = 4.1817E+03
+     Prandtl Number                                        = 1.0275E+01
+
+ +--------------------------------------------------------------------+
+ |                Checking for Isolated Fluid Regions                 |
+ +--------------------------------------------------------------------+
+ 
+ No isolated fluid regions were found.
+
+ +--------------------------------------------------------------------+
+ |              The Equations Solved in This Calculation              |
+ +--------------------------------------------------------------------+
+
+ Subsystem : Momentum and Mass
+
+   U-Mom
+   V-Mom
+   W-Mom
+   P-Mass
+
+ Subsystem : Heat Transfer
+
+   H-Energy
+
+ Subsystem : TurbKE and Diss.K
+
+   K-TurbKE
+   E-Diss.K
+                   
+ CFD Solver started: Fri Sep 30 16:10:34 2016
+
+
+ +--------------------------------------------------------------------+
+ |                       Convergence History                          |
+ +--------------------------------------------------------------------+
+
+ ======================================================================
+ |                        Timescale Information                       |
+ ----------------------------------------------------------------------
+ |       Equation       |         Type          |      Timescale      |
+ +----------------------+-----------------------+---------------------+
+ | U-Mom                | Physical Timescale    |     2.00000E+00     |
+ | V-Mom                | Physical Timescale    |     2.00000E+00     |
+ | W-Mom                | Physical Timescale    |     2.00000E+00     |
+ +----------------------+-----------------------+---------------------+
+ | H-Energy             | Physical Timescale    |     2.00000E+00     |
+ +----------------------+-----------------------+---------------------+
+ | K-TurbKE             | Physical Timescale    |     2.00000E+00     |
+ | E-Diss.K             | Physical Timescale    |     2.00000E+00     |
+ +----------------------+-----------------------+---------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    1                    CPU SECONDS = 1.248E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.00 | 2.8E-05 | 1.6E-04 |       3.5E+00  ok|
+ | V-Mom                | 0.00 | 1.4E-02 | 5.3E-01 |       3.1E-02  OK|
+ | W-Mom                | 0.00 | 5.7E-03 | 9.1E-02 |       2.4E-02  OK|
+ | P-Mass               | 0.00 | 2.1E-03 | 1.0E-01 |  9.5  1.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.00 | 4.6E-02 | 8.5E-01 |  5.5  7.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.00 | 5.1E-02 | 9.8E-01 |  5.5  1.8E-02  OK|
+ | E-Diss.K             | 0.00 | 4.5E-02 | 1.0E+00 |  7.5  8.7E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    2                    CPU SECONDS = 1.794E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                |99.99 | 4.1E-03 | 3.3E-02 |       7.9E-02  OK|
+ | V-Mom                | 1.53 | 2.1E-02 | 3.2E-01 |       6.3E-02  OK|
+ | W-Mom                | 1.78 | 1.0E-02 | 9.3E-02 |       3.4E-02  OK|
+ | P-Mass               | 1.10 | 2.3E-03 | 1.5E-01 |  9.5  9.0E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.46 | 2.1E-02 | 3.9E-01 | 10.1  3.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 1.47 | 7.4E-02 | 5.0E-01 |  5.6  9.8E-05  OK|
+ | E-Diss.K             | 3.46 | 1.6E-01 | 1.3E+00 |  7.6  9.1E-07  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    3                    CPU SECONDS = 2.293E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.95 | 3.9E-03 | 5.8E-02 |       5.5E-02  OK|
+ | V-Mom                | 0.82 | 1.8E-02 | 1.8E-01 |       5.7E-02  OK|
+ | W-Mom                | 0.92 | 9.3E-03 | 1.1E-01 |       3.4E-02  OK|
+ | P-Mass               | 0.66 | 1.5E-03 | 3.3E-02 |  9.5  5.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.65 | 1.4E-02 | 2.1E-01 | 10.1  1.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.23 | 1.7E-02 | 3.8E-01 |  5.6  4.3E-03  OK|
+ | E-Diss.K             | 0.07 | 1.2E-02 | 2.4E-01 |  7.6  2.8E-05  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    4                    CPU SECONDS = 2.776E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.39 | 1.5E-03 | 2.3E-02 |       5.9E-02  OK|
+ | V-Mom                | 0.51 | 9.0E-03 | 8.7E-02 |       4.5E-02  OK|
+ | W-Mom                | 0.49 | 4.5E-03 | 6.0E-02 |       3.0E-02  OK|
+ | P-Mass               | 0.32 | 5.0E-04 | 1.2E-02 |  9.5  2.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.76 | 1.0E-02 | 2.6E-01 |  5.5  7.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.53 | 8.9E-03 | 2.2E-01 |  5.6  1.8E-02  OK|
+ | E-Diss.K             | 0.96 | 1.1E-02 | 3.5E-01 |  7.6  1.2E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    5                    CPU SECONDS = 3.260E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.75 | 1.1E-03 | 1.4E-02 |       6.4E-02  OK|
+ | V-Mom                | 0.74 | 6.7E-03 | 9.9E-02 |       5.0E-02  OK|
+ | W-Mom                | 0.58 | 2.6E-03 | 4.4E-02 |       4.8E-02  OK|
+ | P-Mass               | 0.65 | 3.3E-04 | 6.9E-03 |  9.5  3.3E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.63 | 6.6E-03 | 5.0E-02 |  5.6  4.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 1.38 | 1.2E-02 | 3.3E-01 |  5.6  7.0E-03  OK|
+ | E-Diss.K             | 0.46 | 5.1E-03 | 1.4E-01 |  7.6  1.2E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    6                    CPU SECONDS = 3.744E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.82 | 9.3E-04 | 1.7E-02 |       6.6E-02  OK|
+ | V-Mom                | 0.74 | 5.0E-03 | 9.0E-02 |       6.8E-02  OK|
+ | W-Mom                | 0.72 | 1.9E-03 | 3.8E-02 |       4.8E-02  OK|
+ | P-Mass               | 0.94 | 3.1E-04 | 7.4E-03 |  9.5  3.5E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.89 | 5.9E-03 | 6.8E-02 |  5.6  4.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 1.26 | 1.5E-02 | 3.6E-01 |  5.6  1.0E-02  OK|
+ | E-Diss.K             | 0.87 | 4.4E-03 | 8.7E-02 | 14.1  3.4E-05  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    7                    CPU SECONDS = 4.227E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.99 | 9.2E-04 | 1.7E-02 |       5.0E-02  OK|
+ | V-Mom                | 0.84 | 4.2E-03 | 8.1E-02 |       5.5E-02  OK|
+ | W-Mom                | 0.97 | 1.8E-03 | 4.6E-02 |       3.8E-02  OK|
+ | P-Mass               | 0.90 | 2.8E-04 | 8.1E-03 |  9.5  3.4E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.82 | 4.8E-03 | 4.6E-02 |  5.6  6.0E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.68 | 1.0E-02 | 1.7E-01 |  5.6  1.0E-02  OK|
+ | E-Diss.K             | 0.72 | 3.2E-03 | 6.7E-02 | 14.1  3.6E-05  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    8                    CPU SECONDS = 4.711E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.84 | 7.7E-04 | 1.2E-02 |       3.4E-02  OK|
+ | V-Mom                | 0.84 | 3.5E-03 | 6.7E-02 |       4.6E-02  OK|
+ | W-Mom                | 0.75 | 1.4E-03 | 2.3E-02 |       3.0E-02  OK|
+ | P-Mass               | 0.88 | 2.4E-04 | 7.5E-03 |  9.5  3.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.83 | 4.0E-03 | 5.6E-02 |  5.6  5.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.78 | 8.2E-03 | 1.4E-01 |  5.6  7.3E-03  OK|
+ | E-Diss.K             | 0.92 | 2.9E-03 | 7.4E-02 | 14.1  2.8E-05  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =    9                    CPU SECONDS = 5.194E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.85 | 6.6E-04 | 1.1E-02 |       3.0E-02  OK|
+ | V-Mom                | 0.86 | 3.0E-03 | 4.6E-02 |       4.1E-02  OK|
+ | W-Mom                | 0.79 | 1.1E-03 | 2.1E-02 |       3.1E-02  OK|
+ | P-Mass               | 0.84 | 2.0E-04 | 6.4E-03 |  9.5  2.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   3.8% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.85 | 3.4E-03 | 4.4E-02 |  5.6  5.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.84 | 6.9E-03 | 7.3E-02 |  5.6  9.1E-03  OK|
+ | E-Diss.K             | 0.88 | 2.6E-03 | 6.7E-02 |  7.5  1.6E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   10                    CPU SECONDS = 5.678E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.84 | 5.5E-04 | 8.2E-03 |       3.2E-02  OK|
+ | V-Mom                | 0.82 | 2.4E-03 | 3.6E-02 |       3.6E-02  OK|
+ | W-Mom                | 0.81 | 8.7E-04 | 1.0E-02 |       3.3E-02  OK|
+ | P-Mass               | 0.81 | 1.7E-04 | 5.0E-03 |  9.5  2.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   8.3% of the faces,   6.0% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.86 | 2.9E-03 | 4.4E-02 |  5.6  5.5E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 1.26 | 8.7E-03 | 1.2E-01 |  5.6  1.3E-02  OK|
+ | E-Diss.K             | 0.83 | 2.1E-03 | 5.6E-02 |  7.5  3.2E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   11                    CPU SECONDS = 6.146E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.85 | 4.7E-04 | 7.8E-03 |       3.1E-02  OK|
+ | V-Mom                | 0.84 | 2.0E-03 | 2.4E-02 |       3.2E-02  OK|
+ | W-Mom                | 0.85 | 7.4E-04 | 7.2E-03 |       2.9E-02  OK|
+ | P-Mass               | 0.80 | 1.3E-04 | 3.9E-03 |  9.5  2.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at  10.2% of the faces,   7.7% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.88 | 2.5E-03 | 4.6E-02 |  5.5  4.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 1.46 | 1.3E-02 | 1.8E-01 |  5.6  1.8E-02  OK|
+ | E-Diss.K             | 0.80 | 1.7E-03 | 4.5E-02 |  7.5  6.1E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   12                    CPU SECONDS = 6.630E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.86 | 4.0E-04 | 6.9E-03 |       2.9E-02  OK|
+ | V-Mom                | 0.86 | 1.8E-03 | 1.7E-02 |       2.5E-02  OK|
+ | W-Mom                | 0.89 | 6.6E-04 | 4.9E-03 |       2.3E-02  OK|
+ | P-Mass               | 0.81 | 1.1E-04 | 3.0E-03 |  9.5  2.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at  10.2% of the faces,   7.7% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.91 | 2.3E-03 | 4.2E-02 |  5.5  3.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 1.36 | 1.7E-02 | 2.1E-01 |  5.6  2.4E-02  OK|
+ | E-Diss.K             | 0.81 | 1.4E-03 | 3.7E-02 |  7.5  1.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   13                    CPU SECONDS = 7.098E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.86 | 3.5E-04 | 5.6E-03 |       2.7E-02  OK|
+ | V-Mom                | 0.88 | 1.5E-03 | 1.6E-02 |       2.2E-02  OK|
+ | W-Mom                | 0.84 | 5.5E-04 | 4.2E-03 |       1.8E-02  OK|
+ | P-Mass               | 0.82 | 8.8E-05 | 2.3E-03 |  9.5  2.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at  10.2% of the faces,   7.7% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.89 | 2.0E-03 | 3.5E-02 |  5.6  3.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.77 | 1.3E-02 | 1.2E-01 |  5.6  3.4E-02  OK|
+ | E-Diss.K             | 0.88 | 1.2E-03 | 3.0E-02 |  7.5  1.5E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   14                    CPU SECONDS = 7.566E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.84 | 2.9E-04 | 4.7E-03 |       2.6E-02  OK|
+ | V-Mom                | 0.87 | 1.3E-03 | 1.4E-02 |       2.9E-02  OK|
+ | W-Mom                | 0.82 | 4.5E-04 | 3.7E-03 |       1.5E-02  OK|
+ | P-Mass               | 0.82 | 7.2E-05 | 1.8E-03 |  9.5  3.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at  10.2% of the faces,   7.7% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.82 | 1.7E-03 | 3.6E-02 |  5.6  3.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.67 | 8.7E-03 | 1.0E-01 |  5.5  3.8E-02  OK|
+ | E-Diss.K             | 1.16 | 1.4E-03 | 2.5E-02 |  7.5  1.5E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   15                    CPU SECONDS = 8.034E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.83 | 2.4E-04 | 4.5E-03 |       3.0E-02  OK|
+ | V-Mom                | 0.82 | 1.1E-03 | 1.2E-02 |       3.3E-02  OK|
+ | W-Mom                | 0.78 | 3.5E-04 | 3.9E-03 |       1.6E-02  OK|
+ | P-Mass               | 0.84 | 6.0E-05 | 1.4E-03 |  9.5  2.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   3.7% of the faces,   2.6% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.77 | 1.3E-03 | 2.9E-02 |  5.5  4.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.61 | 5.3E-03 | 1.6E-01 |  5.5  4.3E-02  OK|
+ | E-Diss.K             | 0.93 | 1.3E-03 | 3.6E-02 |  7.5  1.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   16                    CPU SECONDS = 8.502E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.85 | 2.0E-04 | 4.2E-03 |       8.1E-02  OK|
+ | V-Mom                | 0.72 | 7.9E-04 | 9.3E-03 |       8.8E-02  OK|
+ | W-Mom                | 0.76 | 2.7E-04 | 4.1E-03 |       8.0E-02  OK|
+ | P-Mass               | 0.84 | 5.1E-05 | 1.1E-03 |  5.2  9.5E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   1.9% of the faces,   1.2% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.75 | 9.7E-04 | 2.3E-02 |  5.6  3.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.57 | 3.0E-03 | 1.0E-01 |  5.5  4.2E-02  OK|
+ | E-Diss.K             | 0.62 | 8.1E-04 | 2.1E-02 |  7.6  1.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   17                    CPU SECONDS = 8.954E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.85 | 1.7E-04 | 3.9E-03 |       9.6E-02  OK|
+ | V-Mom                | 0.72 | 5.7E-04 | 8.8E-03 |       7.2E-02  OK|
+ | W-Mom                | 0.84 | 2.2E-04 | 4.1E-03 |       7.1E-02  OK|
+ | P-Mass               | 0.82 | 4.2E-05 | 8.5E-04 |  5.2  8.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.82 | 8.0E-04 | 1.6E-02 |  5.6  3.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.93 | 2.8E-03 | 4.5E-02 |  5.5  3.0E-02  OK|
+ | E-Diss.K             | 0.83 | 6.7E-04 | 1.3E-02 |  7.6  7.4E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   18                    CPU SECONDS = 9.406E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.91 | 1.6E-04 | 3.5E-03 |       1.2E-01  ok|
+ | V-Mom                | 0.83 | 4.7E-04 | 8.2E-03 |       7.1E-02  OK|
+ | W-Mom                | 0.93 | 2.1E-04 | 4.0E-03 |       8.5E-02  OK|
+ | P-Mass               | 0.82 | 3.4E-05 | 7.4E-04 |  5.2  8.4E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.94 | 7.5E-04 | 1.5E-02 |  5.6  3.5E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 1.33 | 3.7E-03 | 8.4E-02 |  5.5  3.6E-02  OK|
+ | E-Diss.K             | 1.17 | 7.9E-04 | 2.3E-02 |  7.6  6.0E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   19                    CPU SECONDS = 9.874E+00
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.90 | 1.4E-04 | 3.2E-03 |       1.4E-01  ok|
+ | V-Mom                | 0.98 | 4.6E-04 | 7.8E-03 |       9.7E-02  OK|
+ | W-Mom                | 0.94 | 2.0E-04 | 3.7E-03 |       9.7E-02  OK|
+ | P-Mass               | 0.83 | 2.8E-05 | 6.5E-04 |  5.2  9.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.87 | 6.5E-04 | 1.1E-02 |  5.5  4.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 1.04 | 3.9E-03 | 1.1E-01 |  5.5  3.7E-02  OK|
+ | E-Diss.K             | 0.98 | 7.7E-04 | 2.2E-02 |  7.6  6.1E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   20                    CPU SECONDS = 1.033E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.87 | 1.2E-04 | 2.9E-03 |       4.8E-02  OK|
+ | V-Mom                | 0.95 | 4.4E-04 | 9.3E-03 |       4.3E-02  OK|
+ | W-Mom                | 0.89 | 1.7E-04 | 3.5E-03 |       3.4E-02  OK|
+ | P-Mass               | 0.85 | 2.4E-05 | 6.2E-04 |  9.5  2.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.83 | 5.4E-04 | 7.7E-03 |  5.5  5.4E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.83 | 3.2E-03 | 9.4E-02 |  5.5  3.6E-02  OK|
+ | E-Diss.K             | 0.69 | 5.4E-04 | 1.5E-02 |  7.5  7.7E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   21                    CPU SECONDS = 1.081E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.87 | 1.1E-04 | 2.9E-03 |       6.1E-02  OK|
+ | V-Mom                | 0.88 | 3.8E-04 | 7.3E-03 |       5.0E-02  OK|
+ | W-Mom                | 0.85 | 1.5E-04 | 3.2E-03 |       4.1E-02  OK|
+ | P-Mass               | 0.87 | 2.1E-05 | 6.1E-04 |  9.5  3.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.88 | 4.7E-04 | 6.8E-03 |  5.5  6.3E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.90 | 2.9E-03 | 6.6E-02 |  5.5  3.4E-02  OK|
+ | E-Diss.K             | 0.84 | 4.5E-04 | 8.6E-03 |  7.6  7.6E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   22                    CPU SECONDS = 1.128E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.88 | 9.3E-05 | 2.8E-03 |       7.0E-02  OK|
+ | V-Mom                | 0.92 | 3.6E-04 | 5.9E-03 |       5.4E-02  OK|
+ | W-Mom                | 0.90 | 1.3E-04 | 3.0E-03 |       4.6E-02  OK|
+ | P-Mass               | 0.87 | 1.8E-05 | 5.8E-04 |  9.5  4.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | H-Energy             | 0.95 | 4.5E-04 | 6.4E-03 |  5.5  6.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.97 | 2.8E-03 | 3.7E-02 |  5.5  3.2E-02  OK|
+ | E-Diss.K             | 0.95 | 4.3E-04 | 7.9E-03 |  7.6  7.2E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   23                    CPU SECONDS = 1.175E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.93 | 8.7E-05 | 2.7E-03 |       7.1E-02  OK|
+ | V-Mom                | 0.96 | 3.4E-04 | 5.4E-03 |       5.5E-02  OK|
+ | W-Mom                | 0.95 | 1.3E-04 | 2.7E-03 |       4.7E-02  OK|
+ | P-Mass               | 0.88 | 1.6E-05 | 5.4E-04 |  9.5  4.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   0.9% of the faces,   0.6% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.96 | 4.3E-04 | 6.0E-03 |  5.5  6.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.93 | 2.6E-03 | 3.3E-02 |  5.6  2.9E-02  OK|
+ | E-Diss.K             | 0.89 | 3.8E-04 | 7.6E-03 |  7.5  6.8E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   24                    CPU SECONDS = 1.221E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.96 | 8.3E-05 | 2.6E-03 |       6.7E-02  OK|
+ | V-Mom                | 0.96 | 3.3E-04 | 4.9E-03 |       5.2E-02  OK|
+ | W-Mom                | 0.96 | 1.2E-04 | 2.5E-03 |       4.5E-02  OK|
+ | P-Mass               | 0.91 | 1.5E-05 | 5.1E-04 |  9.5  3.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   2.8% of the faces,   1.9% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.96 | 4.2E-04 | 5.5E-03 |  5.5  6.4E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.87 | 2.3E-03 | 2.9E-02 |  5.5  3.1E-02  OK|
+ | E-Diss.K             | 0.87 | 3.3E-04 | 6.4E-03 |  7.5  6.5E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   25                    CPU SECONDS = 1.268E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.96 | 8.0E-05 | 2.4E-03 |       5.9E-02  OK|
+ | V-Mom                | 0.94 | 3.1E-04 | 4.7E-03 |       4.6E-02  OK|
+ | W-Mom                | 0.93 | 1.1E-04 | 2.2E-03 |       4.2E-02  OK|
+ | P-Mass               | 0.91 | 1.3E-05 | 4.7E-04 |  9.5  3.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   2.8% of the faces,   1.9% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.97 | 4.0E-04 | 5.2E-03 |  5.6  6.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.81 | 1.9E-03 | 2.8E-02 |  5.6  2.9E-02  OK|
+ | E-Diss.K             | 0.86 | 2.9E-04 | 5.1E-03 |  7.5  6.3E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   26                    CPU SECONDS = 1.317E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.93 | 7.4E-05 | 2.2E-03 |       5.0E-02  OK|
+ | V-Mom                | 0.92 | 2.8E-04 | 4.4E-03 |       3.9E-02  OK|
+ | W-Mom                | 0.91 | 1.0E-04 | 2.0E-03 |       3.8E-02  OK|
+ | P-Mass               | 0.91 | 1.2E-05 | 4.3E-04 |  9.5  2.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   4.6% of the faces,   3.4% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.95 | 3.8E-04 | 5.7E-03 |  5.5  6.0E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.76 | 1.4E-03 | 2.5E-02 |  5.6  2.4E-02  OK|
+ | E-Diss.K             | 0.85 | 2.4E-04 | 4.0E-03 |  7.5  5.6E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   27                    CPU SECONDS = 1.363E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.90 | 6.6E-05 | 2.0E-03 |       4.1E-02  OK|
+ | V-Mom                | 0.90 | 2.6E-04 | 4.1E-03 |       3.0E-02  OK|
+ | W-Mom                | 0.89 | 9.1E-05 | 1.8E-03 |       3.2E-02  OK|
+ | P-Mass               | 0.90 | 1.1E-05 | 3.9E-04 |  9.5  2.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   4.6% of the faces,   3.4% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.92 | 3.5E-04 | 5.0E-03 |  5.6  5.3E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.73 | 1.0E-03 | 2.0E-02 |  5.5  2.0E-02  OK|
+ | E-Diss.K             | 0.83 | 2.0E-04 | 3.3E-03 |  7.5  5.4E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   28                    CPU SECONDS = 1.410E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.88 | 5.8E-05 | 1.7E-03 |       3.4E-02  OK|
+ | V-Mom                | 0.88 | 2.3E-04 | 3.8E-03 |       2.1E-02  OK|
+ | W-Mom                | 0.89 | 8.2E-05 | 1.5E-03 |       2.6E-02  OK|
+ | P-Mass               | 0.88 | 9.5E-06 | 3.5E-04 |  9.5  1.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.89 | 3.1E-04 | 4.3E-03 |  5.6  4.2E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.77 | 7.8E-04 | 1.2E-02 |  5.5  2.7E-02  OK|
+ | E-Diss.K             | 0.84 | 1.7E-04 | 3.0E-03 |  7.5  5.4E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   29                    CPU SECONDS = 1.459E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.87 | 5.1E-05 | 1.5E-03 |       2.9E-02  OK|
+ | V-Mom                | 0.87 | 2.0E-04 | 3.5E-03 |       2.0E-02  OK|
+ | W-Mom                | 0.90 | 7.3E-05 | 1.3E-03 |       2.0E-02  OK|
+ | P-Mass               | 0.87 | 8.3E-06 | 3.1E-04 |  9.5  1.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.89 | 2.8E-04 | 3.8E-03 |  5.6  3.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.87 | 6.8E-04 | 5.9E-03 |  5.5  3.5E-02  OK|
+ | E-Diss.K             | 0.87 | 1.5E-04 | 2.8E-03 |  7.5  8.0E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   30                    CPU SECONDS = 1.507E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.88 | 4.5E-05 | 1.3E-03 |       2.6E-02  OK|
+ | V-Mom                | 0.87 | 1.7E-04 | 3.3E-03 |       2.8E-02  OK|
+ | W-Mom                | 0.89 | 6.5E-05 | 1.2E-03 |       1.7E-02  OK|
+ | P-Mass               | 0.87 | 7.2E-06 | 2.8E-04 |  9.5  2.0E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.89 | 2.5E-04 | 3.5E-03 |  5.6  3.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.93 | 6.3E-04 | 6.1E-03 |  5.6  3.5E-02  OK|
+ | E-Diss.K             | 0.92 | 1.4E-04 | 2.6E-03 |  7.5  7.4E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   31                    CPU SECONDS = 1.555E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.89 | 4.0E-05 | 1.2E-03 |       2.4E-02  OK|
+ | V-Mom                | 0.88 | 1.5E-04 | 3.0E-03 |       3.5E-02  OK|
+ | W-Mom                | 0.89 | 5.8E-05 | 1.1E-03 |       1.6E-02  OK|
+ | P-Mass               | 0.88 | 6.3E-06 | 2.5E-04 |  9.5  2.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.91 | 2.3E-04 | 3.1E-03 |  5.6  4.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.94 | 5.9E-04 | 9.6E-03 |  5.5  2.8E-02  OK|
+ | E-Diss.K             | 0.93 | 1.3E-04 | 2.4E-03 |  7.5  5.0E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   32                    CPU SECONDS = 1.604E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.90 | 3.6E-05 | 1.1E-03 |       2.5E-02  OK|
+ | V-Mom                | 0.90 | 1.4E-04 | 2.8E-03 |       3.4E-02  OK|
+ | W-Mom                | 0.90 | 5.2E-05 | 1.0E-03 |       1.6E-02  OK|
+ | P-Mass               | 0.89 | 5.6E-06 | 2.2E-04 |  9.5  2.3E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.92 | 2.1E-04 | 2.8E-03 |  5.6  3.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.91 | 5.4E-04 | 1.2E-02 |  5.5  2.4E-02  OK|
+ | E-Diss.K             | 0.90 | 1.1E-04 | 2.3E-03 |  7.5  3.9E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   33                    CPU SECONDS = 1.650E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.91 | 3.3E-05 | 1.0E-03 |       3.1E-02  OK|
+ | V-Mom                | 0.92 | 1.3E-04 | 2.5E-03 |       3.1E-02  OK|
+ | W-Mom                | 0.89 | 4.7E-05 | 9.5E-04 |       1.7E-02  OK|
+ | P-Mass               | 0.90 | 5.1E-06 | 2.0E-04 |  9.5  2.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.93 | 1.9E-04 | 2.7E-03 |  5.6  3.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.87 | 4.7E-04 | 1.0E-02 |  5.5  3.1E-02  OK|
+ | E-Diss.K             | 0.86 | 9.8E-05 | 2.2E-03 |  7.5  4.6E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   34                    CPU SECONDS = 1.697E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.92 | 3.1E-05 | 9.7E-04 |       3.8E-02  OK|
+ | V-Mom                | 0.93 | 1.2E-04 | 2.3E-03 |       3.2E-02  OK|
+ | W-Mom                | 0.89 | 4.1E-05 | 8.6E-04 |       2.1E-02  OK|
+ | P-Mass               | 0.90 | 4.6E-06 | 1.8E-04 |  9.5  3.0E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.94 | 1.8E-04 | 2.7E-03 |  5.6  4.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.88 | 4.1E-04 | 6.2E-03 |  5.5  3.7E-02  OK|
+ | E-Diss.K             | 0.87 | 8.6E-05 | 2.1E-03 |  7.5  7.3E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   35                    CPU SECONDS = 1.744E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.92 | 2.8E-05 | 9.0E-04 |       4.3E-02  OK|
+ | V-Mom                | 0.93 | 1.1E-04 | 2.1E-03 |       3.6E-02  OK|
+ | W-Mom                | 0.88 | 3.6E-05 | 7.7E-04 |       2.3E-02  OK|
+ | P-Mass               | 0.91 | 4.2E-06 | 1.6E-04 |  9.5  3.3E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.94 | 1.7E-04 | 2.4E-03 |  5.6  4.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.89 | 3.7E-04 | 4.0E-03 |  5.5  3.8E-02  OK|
+ | E-Diss.K             | 0.91 | 7.8E-05 | 2.0E-03 |  7.5  1.0E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   36                    CPU SECONDS = 1.792E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.92 | 2.6E-05 | 8.2E-04 |       4.3E-02  OK|
+ | V-Mom                | 0.92 | 9.9E-05 | 1.9E-03 |       3.7E-02  OK|
+ | W-Mom                | 0.88 | 3.2E-05 | 6.9E-04 |       2.4E-02  OK|
+ | P-Mass               | 0.91 | 3.8E-06 | 1.5E-04 |  9.5  3.4E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.93 | 1.6E-04 | 2.1E-03 |  5.6  4.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.84 | 3.1E-04 | 3.4E-03 |  5.6  3.7E-02  OK|
+ | E-Diss.K             | 0.91 | 7.1E-05 | 1.9E-03 |  7.5  1.0E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   37                    CPU SECONDS = 1.839E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.91 | 2.4E-05 | 7.4E-04 |       4.0E-02  OK|
+ | V-Mom                | 0.91 | 9.0E-05 | 1.7E-03 |       3.7E-02  OK|
+ | W-Mom                | 0.88 | 2.9E-05 | 6.1E-04 |       2.3E-02  OK|
+ | P-Mass               | 0.91 | 3.5E-06 | 1.3E-04 |  9.5  3.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.92 | 1.4E-04 | 1.8E-03 |  5.6  4.6E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.79 | 2.5E-04 | 3.1E-03 |  5.6  3.1E-02  OK|
+ | E-Diss.K             | 0.88 | 6.3E-05 | 1.8E-03 |  7.5  8.2E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   38                    CPU SECONDS = 1.884E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.90 | 2.1E-05 | 6.5E-04 |       3.6E-02  OK|
+ | V-Mom                | 0.90 | 8.1E-05 | 1.5E-03 |       3.8E-02  OK|
+ | W-Mom                | 0.89 | 2.5E-05 | 5.5E-04 |       2.1E-02  OK|
+ | P-Mass               | 0.91 | 3.1E-06 | 1.1E-04 |  9.5  2.9E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   5.6% of the faces,   4.1% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.91 | 1.3E-04 | 1.6E-03 |  5.6  4.1E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.81 | 2.0E-04 | 2.6E-03 |  5.6  2.1E-02  OK|
+ | E-Diss.K             | 0.87 | 5.5E-05 | 1.7E-03 |  7.5  5.9E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   39                    CPU SECONDS = 1.933E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.90 | 1.9E-05 | 5.6E-04 |       3.1E-02  OK|
+ | V-Mom                | 0.90 | 7.3E-05 | 1.3E-03 |       4.4E-02  OK|
+ | W-Mom                | 0.89 | 2.3E-05 | 4.9E-04 |       2.0E-02  OK|
+ | P-Mass               | 0.90 | 2.8E-06 | 1.0E-04 |  9.5  2.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   6.5% of the faces,   5.0% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.91 | 1.2E-04 | 1.4E-03 |  5.6  3.4E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.91 | 1.8E-04 | 2.4E-03 |  5.6  2.1E-02  OK|
+ | E-Diss.K             | 0.89 | 4.9E-05 | 1.6E-03 |  7.5  5.4E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   40                    CPU SECONDS = 1.980E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.91 | 1.8E-05 | 4.8E-04 |       2.7E-02  OK|
+ | V-Mom                | 0.89 | 6.5E-05 | 1.2E-03 |       5.2E-02  OK|
+ | W-Mom                | 0.90 | 2.0E-05 | 4.3E-04 |       1.9E-02  OK|
+ | P-Mass               | 0.90 | 2.5E-06 | 8.8E-05 |  9.5  2.7E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   6.5% of the faces,   5.0% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.90 | 1.1E-04 | 1.3E-03 |  5.6  3.3E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.95 | 1.7E-04 | 2.5E-03 |  5.6  2.1E-02  OK|
+ | E-Diss.K             | 0.92 | 4.5E-05 | 1.5E-03 |  7.5  5.0E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+
+ ======================================================================
+ OUTER LOOP ITERATION =   41                    CPU SECONDS = 2.026E+01
+ ----------------------------------------------------------------------
+ |       Equation       | Rate | RMS Res | Max Res |  Linear Solution |
+ +----------------------+------+---------+---------+------------------+
+ | U-Mom                | 0.91 | 1.6E-05 | 4.1E-04 |       2.4E-02  OK|
+ | V-Mom                | 0.90 | 5.9E-05 | 1.0E-03 |       5.6E-02  OK|
+ | W-Mom                | 0.90 | 1.8E-05 | 3.8E-04 |       1.8E-02  OK|
+ | P-Mass               | 0.87 | 2.2E-06 | 7.7E-05 |  9.5  2.8E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ +--------------------------------------------------------------------+
+ |                     ****** Notice ******                           |
+ |  A wall has been placed at portion(s) of an OUTLET                 |
+ |  boundary condition (at   6.5% of the faces,   5.0% of the area)   |
+ |  to prevent fluid from flowing into the domain.                    |
+ |  The boundary condition name is: outlet.                           |
+ |  The fluid name is: Fluid 1.                                       |
+ |  If this situation persists, consider switching                    |
+ |  to an Opening type boundary condition instead.                    |
+ +--------------------------------------------------------------------+
+ | H-Energy             | 0.90 | 9.6E-05 | 1.2E-03 |  5.6  3.3E-02  OK|
+ +----------------------+------+---------+---------+------------------+
+ | K-TurbKE             | 0.91 | 1.6E-04 | 2.7E-03 |  5.6  1.6E-02  OK|
+ | E-Diss.K             | 0.92 | 4.1E-05 | 1.4E-03 |  7.5  4.2E-03  OK|
+ +----------------------+------+---------+---------+------------------+
+                   
+ CFD Solver finished: Fri Sep 30 16:10:53 2016
+ CFD Solver wall clock seconds: 1.9484E+01
+
+ ======================================================================
+              Termination and Interrupt Condition Summary
+ ======================================================================
+    
+ CFD Solver: All target criteria reached
+   (Equation residuals)
+
+ ======================================================================
+              Boundary Flow and Total Source Term Summary
+ ======================================================================
+
+ +--------------------------------------------------------------------+
+ |                               U-Mom                                |
+ +--------------------------------------------------------------------+
+ Boundary         : InjectMixer Default                     7.7246E-02
+ Boundary         : main inlet                             -2.1747E-06
+ Boundary         : outlet                                 -1.0042E-01
+ Boundary         : side inlet                             -5.5940E-06
+                                                           -----------
+ Domain Imbalance :                                        -2.3177E-02
+
+ +--------------------------------------------------------------------+
+ |                               V-Mom                                |
+ +--------------------------------------------------------------------+
+ Boundary         : InjectMixer Default                    -5.9975E+02
+ Boundary         : main inlet                             -4.3804E-06
+ Boundary         : outlet                                 -8.6926E+02
+ Boundary         : side inlet                              1.4693E+03
+                                                           -----------
+ Domain Imbalance :                                         3.4009E-01
+
+ +--------------------------------------------------------------------+
+ |                               W-Mom                                |
+ +--------------------------------------------------------------------+
+ Boundary         : InjectMixer Default                     3.1196E+02
+ Boundary         : main inlet                             -3.7526E+02
+ Boundary         : outlet                                  6.3137E+01
+ Boundary         : side inlet                              6.6863E-06
+                                                           -----------
+ Domain Imbalance :                                        -1.5645E-01
+
+ +--------------------------------------------------------------------+
+ |                               P-Mass                               |
+ +--------------------------------------------------------------------+
+ Boundary         : main inlet                              3.7188E+02
+ Boundary         : outlet                                 -6.8913E+02
+ Boundary         : side inlet                              3.1724E+02
+                                                           -----------
+ Domain Imbalance :                                        -4.4556E-03
+
+ +--------------------------------------------------------------------+
+ |                              H-Energy                              |
+ +--------------------------------------------------------------------+
+ Boundary         : main inlet                             -2.0450E+07
+ Boundary         : outlet                                 -1.9921E+06
+ Boundary         : side inlet                              2.2353E+07
+                                                           -----------
+ Domain Imbalance :                                        -8.8174E+04
+
+
+ +--------------------------------------------------------------------+
+ |                     Normalised Imbalance Summary                   |
+ +--------------------------------------------------------------------+
+ |       Equation       |      Maximum Flow     |     Imbalance (%)   |
+ +--------------------------------------------------------------------+
+ | U-Mom                |       1.4693E+03      |       -0.0016       |
+ | V-Mom                |       1.4693E+03      |        0.0231       |
+ | W-Mom                |       1.4693E+03      |       -0.0106       |
+ | P-Mass               |       6.8913E+02      |       -0.0006       |
+ +----------------------+-----------------------+---------------------+
+ | H-Energy             |       2.2353E+07      |       -0.3945       |
+ +----------------------+-----------------------+---------------------+
+
+ ======================================================================
+                     Wall Force and Moment Summary
+ ======================================================================
+                                                                          
+ Notes:
+ 1. Pressure integrals exclude the reference pressure.  To include
+    it, set the expert parameter 'include pref in forces = t'.
+
+
+ +--------------------------------------------------------------------+
+ |                      Pressure Force On Walls                       |
+ +--------------------------------------------------------------------+
+                                    X-Comp.      Y-Comp.      Z-Comp.
+
+ Domain Group: InjectMixer
+
+ InjectMixer Default              2.1346E-01   4.8152E+02  -3.0886E+02
+                                  -----------  -----------  -----------
+ Domain Group Totals :            2.1346E-01   4.8152E+02  -3.0886E+02
+
+
+ +--------------------------------------------------------------------+
+ |                       Viscous Force On Walls                       |
+ +--------------------------------------------------------------------+
+                                    X-Comp.      Y-Comp.      Z-Comp.
+
+ Domain Group: InjectMixer
+
+ InjectMixer Default             -2.9023E-01   1.1823E+02  -3.1068E+00
+                                  -----------  -----------  -----------
+ Domain Group Totals :           -2.9023E-01   1.1823E+02  -3.1068E+00
+
+
+ +--------------------------------------------------------------------+
+ |                      Pressure Moment On Walls                      |
+ +--------------------------------------------------------------------+
+                                    X-Comp.      Y-Comp.      Z-Comp.
+
+ Domain Group: InjectMixer
+
+ InjectMixer Default              3.8216E+02  -8.5360E-02  -1.2545E+01
+                                  -----------  -----------  -----------
+ Domain Group Totals :            3.8216E+02  -8.5360E-02  -1.2545E+01
+
+
+ +--------------------------------------------------------------------+
+ |                       Viscous Moment On Walls                      |
+ +--------------------------------------------------------------------+
+                                    X-Comp.      Y-Comp.      Z-Comp.
+
+ Domain Group: InjectMixer
+
+ InjectMixer Default             -2.7823E+02  -3.5566E-01   1.1075E+00
+                                  -----------  -----------  -----------
+ Domain Group Totals :           -2.7823E+02  -3.5566E-01   1.1075E+00
+
+
+ +--------------------------------------------------------------------+
+ |                   Locations of Maximum Residuals                   |
+ +--------------------------------------------------------------------+
+ |       Equation       |      Domain Name      |     Node Number     |
+ +--------------------------------------------------------------------+
+ | U-Mom                | InjectMixer           |            617      |
+ | V-Mom                | InjectMixer           |            627      |
+ | W-Mom                | InjectMixer           |            627      |
+ | P-Mass               | InjectMixer           |             70      |
+ +----------------------+-----------------------+---------------------+
+ | H-Energy             | InjectMixer           |            954      |
+ +----------------------+-----------------------+---------------------+
+ | K-TurbKE             | InjectMixer           |           4405      |
+ | E-Diss.K             | InjectMixer           |           1277      |
+ +----------------------+-----------------------+---------------------+
+
+ ======================================================================
+ |                     False Transient Information                    |
+ +--------------------------------------------------------------------+
+ |       Equation       |         Type          | Elapsed Pseudo-Time |
+ +--------------------------------------------------------------------+
+ | U-Mom                | Physical Timescale    |     8.20000E+01     |
+ | V-Mom                | Physical Timescale    |     8.20000E+01     |
+ | W-Mom                | Physical Timescale    |     8.20000E+01     |
+ +----------------------+-----------------------+---------------------+
+ | H-Energy             | Physical Timescale    |     8.20000E+01     |
+ +----------------------+-----------------------+---------------------+
+ | K-TurbKE             | Physical Timescale    |     8.20000E+01     |
+ | E-Diss.K             | Physical Timescale    |     8.20000E+01     |
+ +----------------------+-----------------------+---------------------+
+
+ +--------------------------------------------------------------------+
+ |                     Average Scale Information                      |
+ +--------------------------------------------------------------------+
+
+ Domain Name : InjectMixer
+     Global Length                                         = 2.0532E+00
+     Minimum Extent                                        = 1.0000E+00
+     Maximum Extent                                        = 7.0000E+00
+     Density                                               = 9.9700E+02
+     Dynamic Viscosity                                     = 1.3048E-03
+     Velocity                                              = 2.2784E+00
+     Advection Time                                        = 9.0118E-01
+     Reynolds Number                                       = 3.5744E+06
+     Thermal Conductivity                                  = 6.0690E-01
+     Specific Heat Capacity at Constant Pressure           = 4.1817E+03
+     Prandtl Number                                        = 8.9907E+00
+     Temperature Range                                     = 3.0303E+01
+
+ +--------------------------------------------------------------------+
+ |                     Variable Range Information                     |
+ +--------------------------------------------------------------------+
+
+ Domain Name : InjectMixer
+ +--------------------------------------------------------------------+
+ |      Variable Name                         |    min    |    max    |
+ +--------------------------------------------------------------------+
+ | Density                                    |  9.97E+02 |  9.97E+02 |
+ | Specific Heat Capacity at Constant Pressure|  4.18E+03 |  4.18E+03 |
+ | Dynamic Viscosity                          |  7.96E-04 |  1.56E-03 |
+ | Thermal Conductivity                       |  6.07E-01 |  6.07E-01 |
+ | Static Entropy                             | -1.93E+02 |  2.30E+02 |
+ | Velocity u                                 | -1.45E+00 |  1.05E+00 |
+ | Velocity v                                 | -5.16E-01 |  5.34E+00 |
+ | Velocity w                                 | -5.24E-01 |  1.67E+00 |
+ | Pressure                                   | -7.15E+03 |  6.07E+02 |
+ | Turbulence Kinetic Energy                  |  1.13E-05 |  2.36E-01 |
+ | Turbulence Eddy Dissipation                |  2.06E-05 |  2.37E+01 |
+ | Eddy Viscosity                             |  6.79E-05 |  2.06E+01 |
+ | Temperature                                |  2.85E+02 |  3.15E+02 |
+ | Static Enthalpy                            | -5.62E+04 |  7.05E+04 |
+ +--------------------------------------------------------------------+
+
+ +--------------------------------------------------------------------+
+ |               CPU Requirements of Numerical Solution               |
+ +--------------------------------------------------------------------+
+
+ Subsystem Name                  Discretization       Linear Solution
+                                (secs.   %total)     (secs.   %total) 
+ ----------------------------------------------------------------------
+ Momentum and Mass              7.64E+00  36.1 %     1.55E+00   7.3 %
+ Heat Transfer                  2.62E+00  12.4 %     7.38E-01   3.5 %
+ TurbKE and Diss.K              2.90E+00  13.7 %     1.59E+00   7.5 %
+                                -------- -------     --------  ------
+ Subsystem Summary              1.32E+01  62.2 %     3.87E+00  18.3 %
+
+ Variable Updates               2.17E+00   10.3 %
+ File Writing                   1.72E-01    0.8 %
+ Miscellaneous                  1.78E+00    8.4 %
+                                --------
+ Total                          2.12E+01
+
+ +--------------------------------------------------------------------+
+ |                   Job Information at End of Run                    |
+ +--------------------------------------------------------------------+
+
+ Host computer:  D0003711 (PID:4736)
+
+ Job finished:   Fri Sep 30 16:10:54 2016
+
+ Total wall clock time: 2.115E+01 seconds
+             or: (          0:         0:         0:    21.153 )
+                 (       Days:     Hours:   Minutes:   Seconds )
+
+End of solution stage.
+
+ +--------------------------------------------------------------------+
+ | The results from this run of the ANSYS CFX Solver have been        |
+ | written to C:\Users\tapeltie\Documents\THFL_SIM\Tutorial           |
+ | 5\InjectMixer_001.res                                              |
+ +--------------------------------------------------------------------+
+
+
+This run of the ANSYS CFX Solver has finished.

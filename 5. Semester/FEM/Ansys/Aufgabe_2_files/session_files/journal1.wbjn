@@ -1,0 +1,10 @@
+﻿# encoding: utf-8
+# Release 17.1
+SetScriptVersion(Version="17.1.127")
+Save(Overwrite=True)
+template1 = GetTemplate(
+    TemplateName="Static Structural",
+    Solver="ANSYS")
+system1 = template1.CreateSystem()
+Save(Overwrite=True)
+Open(FilePath=GetAbsoluteUserPathName("Ansys/Aufgabe_1.wbpj"))

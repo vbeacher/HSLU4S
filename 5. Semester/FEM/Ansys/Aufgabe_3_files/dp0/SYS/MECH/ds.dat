@@ -1,0 +1,270 @@
+/batch
+*get,_wallstrt,active,,time,wall
+! ANSYS input file written by Workbench version 17.1 RELEASE
+! File used for geometry attach: C:\Users\tapeltie\Documents\Ansys\Aufgabe_3_files\dp0\SYS\DM\SYS.agdb
+/title,Aufgabe_3--Statisch-mechanisch (A5)
+*DIM,_wb_ProjectScratch_dir,string,248
+_wb_ProjectScratch_dir(1) = 'C:\Users\tapeltie\Documents\Ansys\_ProjectScratch\Scr2092\'
+*DIM,_wb_SolverFiles_dir,string,248
+_wb_SolverFiles_dir(1) = 'C:\Users\tapeltie\Documents\Ansys\Aufgabe_3_files\dp0\SYS\MECH\'
+*DIM,_wb_userfiles_dir,string,248
+_wb_userfiles_dir(1) = 'C:\Users\tapeltie\Documents\Ansys\Aufgabe_3_files\user_files\'
+/com,--- Data in consistent NMM units. See Solving Units in the help system for more information.
+/units,MPA
+/nopr
+/wb,file,start              !  signify a WB generated input file
+/prep7
+! Turn off shape checking because checks already performed inside WB mesher.
+! See help system for more information.
+SHPP,OFF,,NOWARN
+/nolist
+etcon,set             ! allow ANSYS to choose best KEYOP's for 180x elements
+/com,*********** Nodes for the whole assembly ***********
+nblock,3
+(1i9,3e20.9e3)
+        1    0.000000000E+000    0.000000000E+000    0.000000000E+000
+        2    2.500000000E+002    0.000000000E+000    0.000000000E+000
+        3    5.000000000E+002    0.000000000E+000    0.000000000E+000
+        4    7.500000000E+002    0.000000000E+000    0.000000000E+000
+        5    1.000000000E+003    0.000000000E+000    0.000000000E+000
+        6    1.250000000E+002    0.000000000E+000    2.500000000E+002
+        7    3.750000000E+002    0.000000000E+000    2.500000000E+002
+        8    6.250000000E+002    0.000000000E+000    2.500000000E+002
+        9    8.750000000E+002    0.000000000E+000    2.500000000E+002
+-1
+/wb,elem,start            !  set before creation of elements
+/com,*********** Elements for Body 1 "Linienk_rper" ***********
+et,1,188
+keyo,1,3,2
+eblock,19,solid,,1
+(19i9)
+        1        1        1        1        0        0        0        0        3        0        1        1        2        6
+-1
+!Material Id = {ABBAAC1C-AAC2-4A42-ACE5-6E1FD3EDF049}
+/com,*********** Elements for Body 2 "Linienk_rper" ***********
+et,2,188
+keyo,2,3,2
+eblock,19,solid,,1
+(19i9)
+        2        2        2        2        0        0        0        0        3        0        2        2        3        7
+-1
+!Material Id = {C27D1488-CA61-4E3C-A595-A40FA10E756F}
+/com,*********** Elements for Body 3 "Linienk_rper" ***********
+et,3,188
+keyo,3,3,2
+eblock,19,solid,,1
+(19i9)
+        3        3        3        3        0        0        0        0        3        0        3        3        4        8
+-1
+!Material Id = {9BD392FE-1B08-4973-A915-A36E7F144AD0}
+/com,*********** Elements for Body 4 "Linienk_rper" ***********
+et,4,188
+keyo,4,3,2
+eblock,19,solid,,1
+(19i9)
+        4        4        4        4        0        0        0        0        3        0        4        4        5        9
+-1
+!Material Id = {BAF311BD-1D33-49FF-92F9-41B97688BFA9}
+/wb,elem,end               !  done creating elements
+/com,*********** Send User Defined Coordinate System(s) ***********
+csys,0
+toffst,273.15,  ! Temperature offset from absolute zero
+/com,*********** Set Reference Temperature ***********
+tref,22.
+/wb,mat,start              !  starting to send materials
+/com,*********** Send Materials ***********
+MP,EX,1,30000,	! tonne s^-2 mm^-1
+MP,NUXY,1,0,
+
+MP,EX,2,30000,	! tonne s^-2 mm^-1
+MP,NUXY,2,0,
+
+MP,EX,3,30000,	! tonne s^-2 mm^-1
+MP,NUXY,3,0,
+
+MP,EX,4,30000,	! tonne s^-2 mm^-1
+MP,NUXY,4,0,
+
+/wb,mat,end                !  done sending materials
+/com,*********** Send Beam Properties ***********
+SECTYPE,1,BEAM,RECT
+SECDATA,10.,88.75
+
+secoffset,cent
+SECTYPE,2,BEAM,RECT
+SECDATA,10.,66.25
+
+secoffset,cent
+SECTYPE,3,BEAM,RECT
+SECDATA,10.,43.75
+
+secoffset,cent
+SECTYPE,4,BEAM,RECT
+SECDATA,10.,21.25
+
+secoffset,cent
+!************************* Model Summary ********************
+!Linienk_rper,	Material,	matid,	1
+!Linienk_rper,	Material,	matid,	2
+!Linienk_rper,	Material,	matid,	3
+!Linienk_rper,	Material,	matid,	4
+!************************* End Model Summary ********************
+! get the diagonal of the bounding box. Needed later for other things
+*get,_xmin,node,,mnloc,x
+*get,_ymin,node,,mnloc,y
+*get,_zmin,node,,mnloc,z
+*get,_xmax,node,,mxloc,x
+*get,_ymax,node,,mxloc,y
+*get,_zmax,node,,mxloc,z
+_ASMDIAG=(_xmax-_xmin)*(_xmax-_xmin)+(_ymax-_ymin)*(_ymax-_ymin)+(_zmax-_zmin)*(_zmax-_zmin)
+_ASMDIAG=SQRT(_ASMDIAG)
+/wb,contact,start          !  starting to send contact
+/wb,contact,end            !  done creating contacts
+/golist
+/wb,load,start             !  starting to send loads
+/com,*********** Fixed Supports ***********
+CMBLOCK,_FIXEDSU,NODE,        1
+(8i10)
+         1
+cmsel,s,_FIXEDSU
+d,all,all
+nsel,all
+nsel,all
+/com,*********** Define Vertex Force Using Follower Elements ***********
+et,5,201
+keyo,5,1,1           ! Keep the direction constant
+keyo,5,2,1           ! Apply Forces only, not moment
+mat,5
+real,5
+type,5
+en,5,5
+r,5
+rmod,5,1,1.0,              ! FX
+mat,6
+real,6
+type,5
+en,6,5
+r,6
+rmod,6,2,1.0,              ! FY
+mat,7
+real,7
+type,5
+en,7,5
+r,7
+rmod,7,3,1.0,              ! FZ
+
+*DIM,_loadvari37x,TABLE,2,1,1,TIME,
+! Time values
+_loadvari37x(1,0,1) = 0.
+_loadvari37x(2,0,1) = 1.
+! Load values
+_loadvari37x(1,1,1) = 0.
+_loadvari37x(2,1,1) = 20000.
+
+
+*DIM,_loadvari37y,TABLE,2,1,1,TIME,
+! Time values
+_loadvari37y(1,0,1) = 0.
+_loadvari37y(2,0,1) = 1.
+! Load values
+_loadvari37y(1,1,1) = 0.
+_loadvari37y(2,1,1) = 0.
+
+
+*DIM,_loadvari37z,TABLE,2,1,1,TIME,
+! Time values
+_loadvari37z(1,0,1) = 0.
+_loadvari37z(2,0,1) = 1.
+! Load values
+_loadvari37z(1,1,1) = 0.
+_loadvari37z(2,1,1) = 0.
+
+/gst,on,on
+fini
+*get,_numnode,node,0,count
+*get,_numelem,elem,0,count
+*get, _MAXELEMNUM, elem, 0, NUM, MAX
+*get, _MAXNODENUM, node, 0, NUM, MAX
+*get, _MAXELEMTYPE, etyp, 0, NUM, MAX
+*get, _MAXREALCONST, real, 0, NUM, MAX
+/go
+/wb,load,end               !  done creating loads
+/com,--- Number of total nodes = %_numnode%
+/com,--- Number of contact elements = 0
+/com,--- Number of spring elements = 0
+/com,--- Number of bearing elements = 0
+/com,--- Number of solid elements = 4
+/com,--- Number of total elements = %_numelem%
+*get,_wallbsol,active,,time,wall
+/com,****************************************************************************
+/com,*************************    SOLUTION       ********************************
+/com,****************************************************************************
+/solu
+antype,0                   ! static analysis
+eqsl,sparse,,,,,1
+cntr,print,1               ! print out contact info and also make no initial contact an error
+dmpopt,emat,no             ! Don't combine emat file for DANSYS
+dmpopt,esav,no             ! Don't combine esav file for DANSYS
+nldiag,cont,iter           ! print out contact info each equilibrium iteration
+resc,,none                 ! Do not keep any restart files
+/com,****************************************************
+/com,******************* SOLVE FOR LS 1 ****************
+esel,s,real,,5
+sfe,all,1,pres,1,%_loadvari37x%
+esel,s,real,,6
+sfe,all,1,pres,1,%_loadvari37y%
+esel,s,real,,7
+sfe,all,1,pres,1,%_loadvari37z%
+esel,all
+/nopr
+/gopr
+nsub,1,1,1
+time,1.
+outres,erase
+outres,all,none
+outres,nsol,all
+outres,rsol,all
+outres,strs,all
+outres,epel,all
+outres,eppl,all
+/nopr
+esel,s,mat,,1
+esel,a,mat,,2,4
+cm,_elmisc,elem
+esel,all
+/gopr
+outres,misc,all,_elmisc
+stabilize,off                   ! Stabilization turned OFF by user
+! *********** WB SOLVE COMMAND ***********
+! check interactive state
+*get,ANSINTER_,active,,int
+*if,ANSINTER_,ne,0,then
+/eof
+*endif
+solve
+/com *************** Write FE CONNECTORS ********* 
+CEWRITE,file,ce,,INTE
+/com,****************************************************
+/com,*************** FINISHED SOLVE FOR LS 1 *************
+*set,_DS_PROGRESS          ! turn off progress updates to avoid virus scanning bug
+*get,_wallasol,active,,time,wall
+/nopr
+*get,_numnode,node,0,count
+*get,_numelem,elem,0,count
+*get, _MAXELEMNUM, elem, 0, NUM, MAX
+*get, _MAXNODENUM, node, 0, NUM, MAX,,,INTERNAL
+*get, _MAXELEMTYPE, etyp, 0, NUM, MAX
+*get, _MAXREALCONST, real, 0, NUM, MAX
+/gopr
+/post1
+xmlo,ENCODING,ISO-8859-1
+xmlo,parm
+/xml,parm,xml
+fini
+/gopr
+*get,_walldone,active,,time,wall
+_preptime=(_wallbsol-_wallstrt)*3600
+_solvtime=(_wallasol-_wallbsol)*3600
+_posttime=(_walldone-_wallasol)*3600
+_totaltim=(_walldone-_wallstrt)*3600
+/wb,file,end               ! done with WB generated input
